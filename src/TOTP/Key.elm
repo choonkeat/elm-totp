@@ -221,4 +221,4 @@ expiresIn (Key { periodSeconds }) now =
     in
     (Time.posixToMillis now // 1000)
         |> modBy secs
-        |> (\i -> secs - i - 1)
+        |> (\i -> secs - i)
