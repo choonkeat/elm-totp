@@ -1,6 +1,7 @@
 module TOTP.Key exposing
     ( Key
     , code
+    , expiresIn
     , fromString
     , init
     , toString
@@ -182,3 +183,14 @@ urlParser =
             <?> Url.Parser.Query.int "digits"
             <?> Url.Parser.Query.int "period"
         )
+
+
+expiresIn : Key -> Time.Posix -> Int
+expiresIn (Key { periodSeconds }) now =
+    let
+        secs =
+            Maybe.withDefault 30 periodSeconds
+    in
+    (Time.posixToMillis now // 1000)
+        |> modBy secs
+        |> (\i -> secs - i - 1)
