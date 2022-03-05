@@ -1,8 +1,19 @@
-module TOTP.Key exposing (Key, code, expiresIn, fromString, init, toString)
+module TOTP.Key exposing
+    ( Key
+    , code, expiresIn, fromString, init, toString
+    )
 
 {-|
 
-@docs Key, code, expiresIn, fromString, init, toString
+
+# Type
+
+@docs Key
+
+
+# Helper functions
+
+@docs code, expiresIn, fromString, init, toString
 
 -}
 
@@ -15,6 +26,7 @@ import Hex
 import String.Extra
 import TOTP
 import TOTP.Algorithm
+import TOTP.Base32String exposing (Base32String(..))
 import Time
 import Url exposing (Url)
 import Url.Builder
@@ -22,13 +34,18 @@ import Url.Parser exposing ((</>), (<?>))
 import Url.Parser.Query
 
 
-{-| <https://github.com/google/google-authenticator/wiki/Key-Uri-Format#algorithm>
+{-| An opaque type to hold the configuration value for a TOTP.
+
+This is the value to store in your database, by calling `toString`
+
+<https://github.com/google/google-authenticator/wiki/Key-Uri-Format#algorithm>
+
 -}
 type Key
     = Key
         { issuer : String
         , user : String
-        , base32Secret : TOTP.Base32String
+        , base32Secret : Base32String
         , outputLength : Maybe Int
         , periodSeconds : Maybe Int
         , algorithm : TOTP.Algorithm.Algorithm
@@ -39,7 +56,7 @@ type Key
 -}
 init : { issuer : String, user : String, rawSecret : String, outputLength : Maybe Int, periodSeconds : Maybe Int, algorithm : TOTP.Algorithm.Algorithm } -> Result String Key
 init { issuer, user, rawSecret, outputLength, periodSeconds, algorithm } =
-    TOTP.stringToBase32 rawSecret
+    TOTP.Base32String.stringToBase32 rawSecret
         |> Result.map
             (\base32Secret ->
                 Key
@@ -114,7 +131,7 @@ toString (Key { issuer, user, base32Secret, outputLength, periodSeconds, algorit
             Url.percentEncode str
                 |> String.replace (Url.percentEncode except) except
 
-        (TOTP.Base32String secret) =
+        (Base32String secret) =
             base32Secret
     in
     { -- because Url.Protocol is Http | Https, we have to
@@ -175,7 +192,7 @@ urlParser =
                 { user = user
                 , base32Secret =
                     Maybe.withDefault "error" secret
-                        |> TOTP.Base32String
+                        |> Base32String
                 , issuer = Maybe.withDefault keyName issuer
                 , algorithm =
                     Maybe.andThen TOTP.Algorithm.fromString algorithm

@@ -1,6 +1,6 @@
 module TOTP exposing
     ( generateTOTP
-    , Base32String(..), stringToBase32, test
+    , test
     )
 
 {-| Based on specification in <https://datatracker.ietf.org/doc/html/rfc6238>
@@ -13,7 +13,7 @@ module TOTP exposing
 
 ## Helper functions
 
-@docs Base32String, stringToBase32, test
+@docs test
 
 -}
 
@@ -26,6 +26,7 @@ import Crypto.HMAC
 import Hex
 import String.Extra
 import TOTP.Algorithm
+import TOTP.Base32String exposing (Base32String(..))
 import Time
 import Url exposing (Url)
 import Url.Builder
@@ -33,49 +34,29 @@ import Url.Parser exposing ((</>), (<?>))
 import Url.Parser.Query
 
 
-{-| A wrapper for `String` to denote that its value is encoded in base32
--}
-type Base32String
-    = Base32String String
-
-
-{-| Attempt to convert a `String` value to `Base32String`
--}
-stringToBase32 : String -> Result String Base32String
-stringToBase32 rawString =
-    String.Extra.toCodePoints rawString
-        |> Base32.encode
-        |> Result.map Base32String
-
-
-bytesFromBase32 : Base32String -> Result String Bytes
-bytesFromBase32 (Base32String s) =
-    Base32.decode s
-        |> Result.map Bytes.Extra.fromByteValues
-
-
 {-| <https://datatracker.ietf.org/doc/html/rfc6238#appendix-B>
 
     import TOTP.Algorithm
+    import TOTP.Base32String exposing (Base32String(..))
     import Time
 
     seed : Base32String
     seed =
         "12345678901234567890"
-            |> stringToBase32
-            |> Result.withDefault (test.base32String "error")
+            |> TOTP.Base32String.stringToBase32
+            |> Result.withDefault (TOTP.Base32String.test.base32String "error")
 
     seed32 : Base32String
     seed32 =
         "12345678901234567890123456789012"
-            |> stringToBase32
-            |> Result.withDefault (test.base32String "error")
+            |> TOTP.Base32String.stringToBase32
+            |> Result.withDefault (TOTP.Base32String.test.base32String "error")
 
     seed64 : Base32String
     seed64 =
         "1234567890123456789012345678901234567890123456789012345678901234"
-            |> stringToBase32
-            |> Result.withDefault (test.base32String "error")
+            |> TOTP.Base32String.stringToBase32
+            |> Result.withDefault (TOTP.Base32String.test.base32String "error")
 
     testTable : List (Int, String, (TOTP.Algorithm.Algorithm, Base32String))
     testTable =
@@ -120,7 +101,7 @@ in the HOTP computation.
 -}
 generateHOTP : TOTP.Algorithm.Algorithm -> Int -> List Int -> Base32String -> Maybe String
 generateHOTP algo outputLength counter base32Secret =
-    bytesFromBase32 base32Secret
+    TOTP.Base32String.bytesFromBase32 base32Secret
         |> Result.toMaybe
         |> Maybe.map (\secret -> TOTP.Algorithm.digestBytes algo secret (Bytes.Extra.fromByteValues counter))
         |> Maybe.map Array.fromList

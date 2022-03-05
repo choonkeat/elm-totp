@@ -74,7 +74,13 @@ fromString str =
             Nothing
 
 
-{-| We need this function to route because Crypto.HMAC does not have SHA1
+{-| We need this function to route calls between underlying libraries
+
+  - [romariolopezc/elm-hmac-sha1](https://package.elm-lang.org/packages/romariolopezc/elm-hmac-sha1/latest/)
+  - [ktonon/elm-crypto](https://package.elm-lang.org/packages/ktonon/elm-crypto/latest)
+
+because [ktonon/elm-crypto does not support SHA1](https://github.com/ktonon/elm-crypto/issues/3)
+
 -}
 digestBytes : Algorithm -> Bytes.Bytes -> Bytes.Bytes -> List Int
 digestBytes alg keyBytes msgBytes =
