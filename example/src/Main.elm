@@ -185,7 +185,7 @@ view model =
         , p [ style "margin" "1em" ]
             [ a [ href "https://github.com/choonkeat/elm-totp" ] [ text "source" ]
             , text " | "
-            , a [ href "https://package.elm-lang.org/packages/choonkeat/formdata/latest" ] [ text "package" ]
+            , a [ href "https://package.elm-lang.org/packages/choonkeat/elm-totp/latest" ] [ text "package" ]
             , text " | "
             , a [ href "https://twitter.com/choonkeat" ] [ text "@choonkeat" ]
             ]
