@@ -1,6 +1,20 @@
-module TOTP exposing (Base32String(..), generateTOTP, stringToBase32, test)
+module TOTP exposing
+    ( generateTOTP
+    , Base32String(..), stringToBase32, test
+    )
 
-{-| See <https://datatracker.ietf.org/doc/html/rfc6238>
+{-| Based on specification in <https://datatracker.ietf.org/doc/html/rfc6238>
+
+
+## Main function
+
+@docs generateTOTP
+
+
+## Helper functions
+
+@docs Base32String, stringToBase32, test
+
 -}
 
 import Array exposing (Array)
@@ -19,10 +33,14 @@ import Url.Parser exposing ((</>), (<?>))
 import Url.Parser.Query
 
 
+{-| A wrapper for `String` to denote that its value is encoded in base32
+-}
 type Base32String
     = Base32String String
 
 
+{-| Attempt to convert a `String` value to `Base32String`
+-}
 stringToBase32 : String -> Result String Base32String
 stringToBase32 rawString =
     String.Extra.toCodePoints rawString
@@ -109,6 +127,15 @@ generateHOTP algo outputLength counter base32Secret =
         |> Maybe.andThen (dynamicTruncation outputLength)
 
 
+{-| Exposed functions to facilitate unit testing of this library
+-}
+test :
+    { valueT : Int -> Time.Posix -> ValueT
+    , newValueT : Int -> ValueT
+    , hexCounter : ValueT -> String
+    , dynamicTruncation : Int -> Array Int -> Maybe String
+    , base32String : String -> Base32String
+    }
 test =
     { valueT = valueT
     , newValueT = ValueT

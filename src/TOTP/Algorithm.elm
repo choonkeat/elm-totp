@@ -1,11 +1,21 @@
 module TOTP.Algorithm exposing
     ( Algorithm(..)
-    , digestBytes
-    , fromString
-    , toString
+    , digestBytes, fromString, toString
     )
 
-{-| -}
+{-|
+
+
+## Types
+
+@docs Algorithm
+
+
+## Helper functions
+
+@docs digestBytes, fromString, toString
+
+-}
 
 import Bytes exposing (Bytes)
 import Bytes.Extra
@@ -27,6 +37,8 @@ type Algorithm
     | SHA512
 
 
+{-| String representation of `Algorithm` value
+-}
 toString : Algorithm -> String
 toString alg =
     case alg of
@@ -40,6 +52,12 @@ toString alg =
             "SHA512"
 
 
+{-| Function to resolve the `Algorithm` from a `String` value.
+
+This is useful when working with HTML inputs, allowing users to choose
+which algorithm to use.
+
+-}
 fromString : String -> Maybe Algorithm
 fromString str =
     case str of

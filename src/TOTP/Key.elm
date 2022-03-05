@@ -1,11 +1,10 @@
-module TOTP.Key exposing
-    ( Key
-    , code
-    , expiresIn
-    , fromString
-    , init
-    , toString
-    )
+module TOTP.Key exposing (Key, code, expiresIn, fromString, init, toString)
+
+{-|
+
+@docs Key, code, expiresIn, fromString, init, toString
+
+-}
 
 import Array exposing (Array)
 import Base16
@@ -36,6 +35,8 @@ type Key
         }
 
 
+{-| Builds a `Key` value from the parameters
+-}
 init : { issuer : String, user : String, rawSecret : String, outputLength : Maybe Int, periodSeconds : Maybe Int, algorithm : TOTP.Algorithm.Algorithm } -> Result String Key
 init { issuer, user, rawSecret, outputLength, periodSeconds, algorithm } =
     TOTP.stringToBase32 rawSecret
@@ -52,6 +53,11 @@ init { issuer, user, rawSecret, outputLength, periodSeconds, algorithm } =
             )
 
 
+{-| Attempt to return the expected OTP code at the given time.
+
+Compare this value against the user input to verify if their OTP is correct.
+
+-}
 code : Time.Posix -> Key -> Result String String
 code now (Key { issuer, user, base32Secret, outputLength, periodSeconds, algorithm }) =
     TOTP.generateTOTP algorithm
@@ -142,6 +148,9 @@ toString (Key { issuer, user, base32Secret, outputLength, periodSeconds, algorit
         |> String.replace "http://" "otpauth://"
 
 
+{-| Attempt to parse a String representation of `Key`
+back into a `Key` value
+-}
 fromString : String -> Maybe Key
 fromString str =
     str
@@ -185,6 +194,8 @@ urlParser =
         )
 
 
+{-| Return the number of seconds the OTP from `code` is valid for
+-}
 expiresIn : Key -> Time.Posix -> Int
 expiresIn (Key { periodSeconds }) now =
     let
