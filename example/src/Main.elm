@@ -214,15 +214,17 @@ formOutput form =
                     [ text "Number of digits"
                     , p []
                         [ input [ onInput OnOutputLength, value form.outputLength, type_ "number" ] []
-                        , small [] [ text "Standard is 6; Google Authenticator only works with standard value" ]
+                        , small [] [ text "Standard is 6 digits" ]
                         ]
                     ]
                 ]
             , p []
                 [ label []
                     [ text "Duration in seconds"
-                    , p [] [ input [ onInput OnPeriodSeconds, value form.periodSeconds, type_ "number" ] [] ]
-                    , small [] [ text "Standard is 30; Google Authenticator only works with standard value" ]
+                    , p []
+                        [ input [ onInput OnPeriodSeconds, value form.periodSeconds, type_ "number" ] []
+                        , small [] [ text "Standard is 30 seconds" ]
+                        ]
                     ]
                 ]
             , p []
@@ -252,9 +254,11 @@ formOutput form =
                                         ]
                                 )
                         )
-                    , small [] [ text "Standard is SHA1; Google Authenticator only works with standard value" ]
+                    , small [] [ text "Standard is SHA1" ]
                     ]
                 ]
+            , p []
+                [ small [] [ a [ href "https://github.com/google/google-authenticator/wiki/Key-Uri-Format#algorithm" ] [ text "NOTE: Google Authenticator only works with standard values" ] ] ]
             ]
         ]
 
