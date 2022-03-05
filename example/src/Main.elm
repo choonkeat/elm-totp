@@ -183,7 +183,12 @@ view model =
             , div [ style "flex" "50%", style "margin" "1em" ] [ qrcodeOutput ]
             ]
         , p [ style "margin" "1em" ]
-            [ a [ href "https://github.com/choonkeat/elm-totp" ] [ text "https://github.com/choonkeat/elm-totp" ] ]
+            [ a [ href "https://github.com/choonkeat/elm-totp" ] [ text "source" ]
+            , text " | "
+            , a [ href "https://package.elm-lang.org/packages/choonkeat/formdata/latest" ] [ text "package" ]
+            , text " | "
+            , a [ href "https://twitter.com/choonkeat" ] [ text "@choonkeat" ]
+            ]
         ]
 
 
