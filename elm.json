@@ -3,7 +3,7 @@
     "name": "choonkeat/elm-totp",
     "summary": "Library for Elm to generate TOTP url keys and code",
     "license": "BSD-3-Clause",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "exposed-modules": [
         "TOTP",
         "TOTP.Algorithm",
