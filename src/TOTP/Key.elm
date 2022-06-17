@@ -1,6 +1,7 @@
 module TOTP.Key exposing
     ( Key
     , code, expiresIn, fromString, init, toString
+    , keyIssuer, keyUser, keyRawSecret, keyOutputLength, keyPeriodSeconds, keyAlgorithm
     )
 
 {-|
@@ -15,11 +16,17 @@ module TOTP.Key exposing
 
 @docs code, expiresIn, fromString, init, toString
 
+
+# Accessors
+
+@docs keyIssuer, keyUser, keyRawSecret, keyOutputLength, keyPeriodSeconds, keyAlgorithm
+
 -}
 
 import Array exposing (Array)
 import Base16
 import Base32
+import Bytes exposing (Bytes)
 import Bytes.Extra
 import Crypto.HMAC
 import Hex
@@ -222,3 +229,153 @@ expiresIn (Key { periodSeconds }) now =
     (Time.posixToMillis now // 1000)
         |> modBy secs
         |> (\i -> secs - i)
+
+
+
+-- ACCESSORS
+
+
+{-|
+
+    import TOTP.Algorithm
+
+    keyResult : Result String Key
+    keyResult =
+        init
+            { issuer = "123issuer"
+            , user = "123user"
+            , rawSecret = "123rawSecret"
+            , outputLength = Just 123
+            , periodSeconds = Just 456
+            , algorithm = TOTP.Algorithm.SHA512
+            }
+
+    Result.map keyIssuer keyResult
+    --> Ok "123issuer"
+
+-}
+keyIssuer : Key -> String
+keyIssuer (Key attr) =
+    attr.issuer
+
+
+{-|
+
+    import TOTP.Algorithm
+
+    keyResult : Result String Key
+    keyResult =
+        init
+            { issuer = "123issuer"
+            , user = "123user"
+            , rawSecret = "123rawSecret"
+            , outputLength = Just 123
+            , periodSeconds = Just 456
+            , algorithm = TOTP.Algorithm.SHA512
+            }
+
+    Result.map keyUser keyResult
+    --> Ok "123user"
+
+-}
+keyUser : Key -> String
+keyUser (Key attr) =
+    attr.user
+
+
+{-|
+
+    import TOTP.Algorithm
+
+    keyResult : Result String Key
+    keyResult =
+        init
+            { issuer = "123issuer"
+            , user = "123user"
+            , rawSecret = "123rawSecret"
+            , outputLength = Just 123
+            , periodSeconds = Just 456
+            , algorithm = TOTP.Algorithm.SHA512
+            }
+
+    Result.andThen keyRawSecret keyResult
+    --> Ok "123rawSecret"
+
+-}
+keyRawSecret : Key -> Result String String
+keyRawSecret (Key attr) =
+    TOTP.Base32String.bytesFromBase32 attr.base32Secret
+        |> Result.map Bytes.Extra.toByteValues
+        |> Result.map String.Extra.fromCodePoints
+
+
+{-|
+
+    import TOTP.Algorithm
+
+    keyResult : Result String Key
+    keyResult =
+        init
+            { issuer = "123issuer"
+            , user = "123user"
+            , rawSecret = "123rawSecret"
+            , outputLength = Just 123
+            , periodSeconds = Just 456
+            , algorithm = TOTP.Algorithm.SHA512
+            }
+
+    Result.map keyOutputLength keyResult
+    --> Ok (Just 123)
+
+-}
+keyOutputLength : Key -> Maybe Int
+keyOutputLength (Key attr) =
+    attr.outputLength
+
+
+{-|
+
+    import TOTP.Algorithm
+
+    keyResult : Result String Key
+    keyResult =
+        init
+            { issuer = "123issuer"
+            , user = "123user"
+            , rawSecret = "123rawSecret"
+            , outputLength = Just 123
+            , periodSeconds = Just 456
+            , algorithm = TOTP.Algorithm.SHA512
+            }
+
+    Result.map keyPeriodSeconds keyResult
+    --> Ok (Just 456)
+
+-}
+keyPeriodSeconds : Key -> Maybe Int
+keyPeriodSeconds (Key attr) =
+    attr.periodSeconds
+
+
+{-|
+
+    import TOTP.Algorithm
+
+    keyResult : Result String Key
+    keyResult =
+        init
+            { issuer = "123issuer"
+            , user = "123user"
+            , rawSecret = "123rawSecret"
+            , outputLength = Just 123
+            , periodSeconds = Just 456
+            , algorithm = TOTP.Algorithm.SHA512
+            }
+
+    Result.map keyAlgorithm keyResult
+    --> Ok TOTP.Algorithm.SHA512
+
+-}
+keyAlgorithm : Key -> TOTP.Algorithm.Algorithm
+keyAlgorithm (Key attr) =
+    attr.algorithm
