@@ -76,7 +76,7 @@ fromString str =
 
 {-| We need this function to route calls between underlying libraries
 
-  - [romariolopezc/elm-hmac-sha1](https://package.elm-lang.org/packages/romariolopezc/elm-hmac-sha1/latest/)
+  - [rlopzc/elm-hmac-sha1](https://package.elm-lang.org/packages/rlopzc/elm-hmac-sha1/latest/)
   - [ktonon/elm-crypto](https://package.elm-lang.org/packages/ktonon/elm-crypto/latest)
 
 because [ktonon/elm-crypto does not support SHA1](https://github.com/ktonon/elm-crypto/issues/3)
