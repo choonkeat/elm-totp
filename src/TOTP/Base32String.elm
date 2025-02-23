@@ -14,6 +14,34 @@ type Base32String
 
 
 {-| Attempt to convert a `String` value to `Base32String`
+
+    import String.Extra
+    import Base32
+    import Bytes.Extra
+    
+    -- Converting a simple string to Base32String and back should work
+    "Hello, World!"
+        |> stringToBase32
+        |> Result.andThen bytesFromBase32
+        |> Result.map Bytes.Extra.toByteValues
+        |> Result.map String.Extra.fromCodePoints
+    --> Ok "Hello, World!"
+    
+    -- Empty string should also work
+    ""
+        |> stringToBase32
+        |> Result.andThen bytesFromBase32
+        |> Result.map Bytes.Extra.toByteValues
+        |> Result.map String.Extra.fromCodePoints
+    --> Ok ""
+    
+    -- Unicode characters should be preserved
+    "🌍👋🏼"
+        |> stringToBase32
+        |> Result.andThen bytesFromBase32
+        |> Result.map Bytes.Extra.toByteValues
+        |> Result.map String.Extra.fromCodePoints
+    --> Ok "🌍👋🏼"
 -}
 stringToBase32 : String -> Result String Base32String
 stringToBase32 rawString =
