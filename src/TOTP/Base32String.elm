@@ -47,12 +47,20 @@ stringToBase32 : String -> Result String Base32String
 stringToBase32 rawString =
     String.Extra.toCodePoints rawString
         |> Base32.encode
+        |> Result.map (String.replace "=" "")
         |> Result.map Base32String
 
 
 bytesFromBase32 : Base32String -> Result String Bytes
 bytesFromBase32 (Base32String s) =
-    Base32.decode s
+    let
+        padLength =
+            (8 - modBy 8 (String.length s)) |> modBy 8
+
+        padded =
+            s ++ String.repeat padLength "="
+    in
+    Base32.decode padded
         |> Result.map Bytes.Extra.fromByteValues
 
 
