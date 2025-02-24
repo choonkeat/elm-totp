@@ -1,2 +1,7 @@
 tests/VerifyExamples
 index.html
+node_modules
+elm-stuff
+build
+.envrc
+.DS_Store
